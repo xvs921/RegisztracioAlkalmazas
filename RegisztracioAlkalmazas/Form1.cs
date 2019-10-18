@@ -35,6 +35,10 @@ namespace RegisztracioAlkalmazas
                     }
                     sw.WriteLine("Kedvenc hobbi: "+listBoxHobbik.SelectedItem);
                     sw.WriteLine("Kedvenc hobbik listája: ");
+                    foreach (var item in listBoxHobbik.Items)
+                    {
+                        sw.Write(item+", ");
+                    }
                     sw.Close();
                 }
                 catch (IOException)
@@ -48,12 +52,23 @@ namespace RegisztracioAlkalmazas
             {
                 try
                 {
-                    string[] sorok = File.ReadAllLines(openFileDialog1.FileName);
-                    listBoxHobbik.Items.Clear();
-                    foreach (var item in sorok)
+                    string fileName = openFileDialog1.FileName;
+                    StreamReader sr = new StreamReader(fileName);
+                    textBoxNev.Text=sr.ReadLine();
+                    
+                    if (sr.ReadLine()=="Férfi")
                     {
-                        listBoxHobbik.Items.Add(item);
+                        radioButtonFerfi.Checked=true;
                     }
+                    else if (sr.ReadLine() == "No")
+                    {
+                        radioButtonNo.Checked = true;
+                    }
+                    for (int i = 0; i < 5; i++)
+                    {
+                        listBoxHobbik.SelectedItem = sr.ReadLine();
+                    }
+                    sr.Close();
                 }
                 catch (IOException)
                 {
