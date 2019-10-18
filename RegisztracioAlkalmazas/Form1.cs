@@ -16,5 +16,6 @@ namespace RegisztracioAlkalmazas
         {
             InitializeComponent();
         }
+
     }
 }
