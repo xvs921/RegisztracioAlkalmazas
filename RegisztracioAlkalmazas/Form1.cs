@@ -23,21 +23,20 @@ namespace RegisztracioAlkalmazas
                 {
                     string fileName = saveFileDialog1.FileName;
                     StreamWriter sw = new StreamWriter(fileName);
-                    sw.WriteLine("Név: "+textBoxNev.Text);
-                    sw.WriteLine("Születési dátum: " + dateTimePickerSzulDatum.Value);
+                    sw.WriteLine(textBoxNev.Text);
+                    sw.WriteLine(dateTimePickerSzulDatum.Text);
                     if (radioButtonFerfi.Checked)
                     {
-                        sw.WriteLine("Nem: Férfi");
+                        sw.WriteLine("Férfi");
                     }
                     else if (radioButtonNo.Checked)
                     {
-                        sw.WriteLine("Nem: Nő");
+                        sw.WriteLine("Nő");
                     }
-                    sw.WriteLine("Kedvenc hobbi: "+listBoxHobbik.SelectedItem);
-                    sw.WriteLine("Kedvenc hobbik listája: ");
+                    sw.WriteLine(listBoxHobbik.SelectedItem);
                     foreach (var item in listBoxHobbik.Items)
                     {
-                        sw.Write(item+", ");
+                        sw.WriteLine(item);
                     }
                     sw.Close();
                 }
@@ -48,34 +47,41 @@ namespace RegisztracioAlkalmazas
 
             };
 
-            openFileDialog1.FileOk += (sender, e) =>
+            openFileDialog1.FileOk += (senderFile, e) =>
             {
                 try
                 {
                     string fileName = openFileDialog1.FileName;
-                    StreamReader sr = new StreamReader(fileName);
-                    textBoxNev.Text=sr.ReadLine();
-                    
-                    if (sr.ReadLine()=="Férfi")
+                    string[] tomb = File.ReadAllLines(fileName);
+                    textBoxNev.Text = tomb[0];
+                    dateTimePickerSzulDatum.Text = tomb[1];
+                    if (tomb[2] == "Férfi")
                     {
-                        radioButtonFerfi.Checked=true;
+                        radioButtonFerfi.Checked = true;
+                        radioButtonNo.Checked = false;
                     }
-                    else if (sr.ReadLine() == "No")
+                    else
                     {
                         radioButtonNo.Checked = true;
+                        radioButtonFerfi.Checked = false;
                     }
-                    for (int i = 0; i < 5; i++)
+                    listBoxHobbik.SelectedItem = tomb[3];
+                    for (int i = 4; i < tomb.Length; i++)
                     {
-                        listBoxHobbik.SelectedItem = sr.ReadLine();
+                        if (!listBoxHobbik.Items.Contains(tomb[i]))
+                        {
+                            listBoxHobbik.Items.Add(tomb[i]);
+                        }
                     }
-                    sr.Close();
+                    
                 }
                 catch (IOException)
                 {
-                    MessageBox.Show("Hiba! Nem sikerült betöltés.");
+                    MessageBox.Show("Hiba! Sikertelen betöltés");
                 }
             };
         }
+
 
         private void btnMentes_Click(object sender, EventArgs e)
         {
